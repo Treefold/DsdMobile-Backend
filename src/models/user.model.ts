@@ -6,6 +6,7 @@ export interface UserInput {
   email: string;
   name: string;
   password: string;
+  dateOfBirth: string | Date;
 }
 
 export interface UserDocument extends UserInput, mongoose.Document {
@@ -19,6 +20,7 @@ const userSchema = new mongoose.Schema(
     email: { type: String, required: true, unique: true },
     name: { type: String, required: true },
     password: { type: String, required: true },
+    dateOfBirth: { type: Date, required: false },
   },
   {
     timestamps: true,
@@ -28,15 +30,15 @@ const userSchema = new mongoose.Schema(
 userSchema.pre("save", async function (next) {
   let user = this as UserDocument;
 
-  if (!user.isModified("password")) {
-    return next();
+  if (user.isModified("password")) {
+    const salt = await bcrypt.genSalt(config.get<number>("saltWorkFactor"));
+    const hash = await bcrypt.hashSync(user.password, salt);
+    user.password = hash;
   }
 
-  const salt = await bcrypt.genSalt(config.get<number>("saltWorkFactor"));
-
-  const hash = await bcrypt.hashSync(user.password, salt);
-
-  user.password = hash;
+  if (user.isModified("dateOfBirth")) {
+    user.dateOfBirth = new Date(user.dateOfBirth);
+  }
 
   return next();
 });
