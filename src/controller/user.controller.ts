@@ -12,6 +12,20 @@ export async function createUserHandler(
     return res.send(user);
   } catch (e: any) {
     logger.error(e);
+
+    if (e.message.includes("dup key: { email:")) {
+      /* duplicated email error */
+      return res.json([{
+        "validation":"email",
+        "code":"duplicated",
+        "message":"This email is already registered",
+        "path":[
+          "body",
+          "email"
+        ]
+      }])
+    }
+
     return res.status(409).send(e.message);
   }
 }
