@@ -15,7 +15,7 @@ export async function createUserHandler(
 
     if (e.message.includes("dup key: { email:")) {
       /* duplicated email error */
-      return res.json([{
+      return res.status(400).json([{
         "validation":"email",
         "code":"duplicated",
         "message":"This email is already registered",
