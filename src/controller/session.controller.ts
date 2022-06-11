@@ -11,6 +11,7 @@ import { signJwt } from "../utils/jwt.utils";
 export async function createUserSessionHandler(req: Request, res: Response) {
   // Validate the user's password
   const user = await validatePassword(req.body);
+  console.log("uservalidate", user)
 
   if (!user) {
     return res.status(401).send("Invalid email or password");
@@ -36,7 +37,7 @@ export async function createUserSessionHandler(req: Request, res: Response) {
 
   // return access & refresh tokens
 
-  return res.send({ accessToken, refreshToken });
+  return res.send({ email: user['email'], name: user['name'], accessToken, refreshToken});
 }
 
 export async function getUserSessionsHandler(req: Request, res: Response) {
