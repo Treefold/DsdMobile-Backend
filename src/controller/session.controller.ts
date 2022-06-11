@@ -36,8 +36,8 @@ export async function createUserSessionHandler(req: Request, res: Response) {
   );
 
   // return access & refresh tokens
-
-  return res.send({ email: user['email'], name: user['name'], accessToken, refreshToken});
+  
+  return res.send({ email: user['email'], name: user['name'], dateOfBirth: user['dateOfBirth'], accessToken, refreshToken});
 }
 
 export async function getUserSessionsHandler(req: Request, res: Response) {
